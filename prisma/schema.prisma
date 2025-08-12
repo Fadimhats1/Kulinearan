@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurants {
+  restaurantId   Int         @id @default(autoincrement())
+  name           String
+  rating         Float       @default(0)
+  avgPrice       Float
+  location       String
+  openTime       String
+  reviews        Reviews[]
+  totalReviews   Int         @default(0)
+  contact        String
+  website        String?
+  restaurantCategories RestaurantCategory[]
+}
+
+model Reviews {
+  reviewId       Int         @id @default(autoincrement())
+  title          String
+  body           String      @db.VarChar(1000)
+  rating         Int         @default(0)
+  restaurants    Restaurants? @relation(fields: [restaurantId], references: [restaurantId])
+  restaurantId   Int?
+  author         Users?       @relation("reviews", fields: [authorId], references: [userId])
+  authorId       String?
+  likedBy        Users[]      @relation("likedBy")
+  createdAt      DateTime     @default(now())
+}
+
+model Users {
+  userId         String      @id @default(uuid())
+  username       String
+  email          String
+  password       String
+  occupation     String      @default("Food Reviewer")
+  reviews        Reviews[]   @relation("reviews")
+  totalReviews   Int         @default(0)
+  likedReviews   Reviews[]   @relation("likedBy")
+}
+
+model Category {
+  categoryName   String      @id
+  restaurantCategories RestaurantCategory[]
+}
+model RestaurantCategory {
+  restaurant     Restaurants @relation(fields: [restaurantId], references: [restaurantId])
+  restaurantId   Int
+  category       Category    @relation(fields: [categoryName], references: [categoryName])
+  categoryName   String
+
+  @@id([restaurantId, categoryName])
+}
