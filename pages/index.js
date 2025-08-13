@@ -46,6 +46,7 @@ export default function Home({ data }) {
       })
     );
   }, [tabValue]);
+  console.log(filteredData)
 
   if (isLoading) {
     return (
