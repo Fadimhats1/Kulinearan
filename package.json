@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node_env=development next dev",
-    "build": "node_env=production next build",
+    "build": "prisma generate && next build",
+    "dev": "next dev",
     "start": "next start",
     "lint": "next lint"
   },
